@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,9 +31,9 @@ public class User implements UserDetails {
     private String email;
     private String password;
     
-    @ManyToMany(fetch = FetchType.EAGER) // para forçar já trazer todos os Roles vinculados a esse usuário sempre que buscar este no bando
+    @ManyToMany
     @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>(); // coleção que não se prepete
+    private Set<Role> roles = new HashSet<>();
 
 
     public User() {
