@@ -22,7 +22,7 @@ public class UserService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		List<UserDetailsProjection> result = repository.searchUserAndRolesByEmail(username); // Testar com JPQL, que o problema seria a paginação - aquela situação ajustada nas versões mais recentes do Spring
-		if (result.size() == 0) {
+		if (result.isEmpty()) {// if (result.size() == 0) {
 			throw new UsernameNotFoundException("Email not found");
 		}
 

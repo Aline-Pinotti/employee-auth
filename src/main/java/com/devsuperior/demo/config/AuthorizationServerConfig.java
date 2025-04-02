@@ -70,6 +70,25 @@ public class AuthorizationServerConfig {
 	private UserDetailsService userDetailsService;
 
 	@Bean
+	@Order(2)
+	public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
+
+		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+
+		// @formatter:off
+		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+			.tokenEndpoint(tokenEndpoint -> tokenEndpoint
+				.accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
+				.authenticationProvider(new CustomPasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder)));
+
+		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
+		// @formatter:on
+
+		return http.build();
+	}
+	
+	// SpringBoot versão 3.4.4 - retorna 403 para insert do Employee e não passa no teste
+	/*@Bean
 	@Order(2) // order 1 e 3 no ResourceServerConfig
 	SecurityFilterChain asSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -87,7 +106,7 @@ public class AuthorizationServerConfig {
 		// @formatter:on
 
 		return http.build();
-	}
+	}*/
 	
 	@Bean
 	public OAuth2AuthorizationService authorizationService() {
